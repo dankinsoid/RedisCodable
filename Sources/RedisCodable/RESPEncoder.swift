@@ -531,9 +531,11 @@ extension JSONEncoder.DateEncodingStrategy {
 			try (date.timeIntervalSince1970 * 1000).encode(to: encoder)
 		case .iso8601:
 			try _iso8601Formatter.string(from: date).encode(to: encoder)
-		case let .formatted(formatter):
+		#if canImport(ObjectiveC)
+		case .formatted(let formatter):
 			try formatter.string(from: date).encode(to: encoder)
-		case let .custom(closure):
+		#endif
+		case .custom(let closure):
 			try closure(date, encoder)
 		@unknown default:
 			try date.timeIntervalSince1970.encode(to: encoder)
